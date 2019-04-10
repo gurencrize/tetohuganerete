@@ -9,21 +9,28 @@ square_height = int(height/20)
 URL = 'http://fumen.zui.jp/?v115@'
 tetohuconvert = [['A','B','C','D','E','F','G','H','I','J'],['K','L','M','N','O','P','Q','R','S','T'],['U','V','W','X','Y','Z','a','b','c','d'],['e','f','g','h','i','j','k','l','m','n'],['o','p','q','r','s','t','u','v','w','x'],['y','z','0','1','2','3','4','5','6','7'],['8','9','+','/']]
 tetohu = [8,29]
+def colorjudge(colorlist):
+    colorlist.sort()
+    if (colorlist[2]-70>colorlist[1] or colorlist[1]-70>colorlist[0]):
+        return True
+    elif(sum(colorlist)>600 and sum(colorlist)-colorlist[1]*3<10):
+        return True
+    else:
+        return False
 def maketetohu(r,g,b):
     tetohulen = len(tetohu)
     colorlist = [r,g,b]
-    colorlist.sort()
-    if colorlist[2]-30<colorlist[1] and colorlist[1]-30<colorlist[0]:
-        if tetohu[tetohulen-2] == 8:
-            tetohu[tetohulen-1] += 1
-        else:
-            tetohu.append(8)
-            tetohu.append(0)
-    else:
+    if colorjudge(colorlist)==True:
         if tetohu[tetohulen-2] == 16:
             tetohu[tetohulen-1] += 1
         else:
             tetohu.append(16)
+            tetohu.append(0)
+    else:
+        if tetohu[tetohulen-2] == 8:
+            tetohu[tetohulen-1] += 1
+        else:
+            tetohu.append(8)
             tetohu.append(0)
 
 for i in range(20):
