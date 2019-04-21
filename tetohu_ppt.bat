@@ -1,1 +1,4 @@
-python tetohu_ppt.py %*
+@echo off
+cd /d %~dp0
+echo %~dp0
+call %~dp0\dist\tetohu_ppt.exe %*
