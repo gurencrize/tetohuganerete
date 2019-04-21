@@ -1,0 +1,1 @@
+python tetohu_ppt.py %*
