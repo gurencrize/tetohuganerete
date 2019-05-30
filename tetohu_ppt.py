@@ -1,8 +1,10 @@
-from PIL import Image,ImageDraw
 import sys
 import webbrowser
+from tkinter import ttk
+from tkinter import *
+from PIL import Image,ImageDraw,ImageTk
 #テト譜の仕様→https://docs.google.com/presentation/d/1V4PNyt41to81phK9u0iXnIkAfp-nV3g3xcl7c5qW-FI/edit
-def main(orgimg):
+def imagetotetohu(orgimg):
     img = Image.open(orgimg)
     img = img.convert("RGB")
     width, height = img.size
@@ -50,8 +52,32 @@ def main(orgimg):
         b = int(c/64)#(a,b)の形が#1の一番上と同じ形式になっているはず
         URL += tetohuconvert[int(a/10)][a%10]+tetohuconvert[int(b/10)][b%10]
     webbrowser.open(URL)
-if sys.argv[1][-4:]=='.png' or sys.argv[1][-4:]=='.jpg':
-    main(sys.argv[1])
-else:
-    print('ファイルが不正です')
-    input('enterを押すと終了します')
+root = Tk()
+root.title('テト譜生成')
+
+frame1 = ttk.Frame(root,height=800,width=500)
+frame1.grid(row=0,column=0,sticky=(N,E,S,W))
+
+orgimg="original.png"
+img1=PhotoImage(file=orgimg)
+label1=ttk.Label(frame1,image=img1)
+label1.grid(row=0,column=0,columnspan=3,sticky=N)
+
+def button1():
+    pass#スクショ撮る処理
+    #label1の画像を開いた画像で更新
+button1=ttk.Button(frame1,text="画像取得",command=button1)
+button1.grid(row=1,column=0,sticky=E)
+
+def button2():
+    pass#ファイルから画像を開く処理
+    #label1の画像を開いた画像で更新
+button2=ttk.Button(frame1,text="ファイルから開く",command=button2)
+button2.grid(row=1,column=1,sticky=S)
+
+def button3():
+    imagetotetohu(orgimg)
+button3=ttk.Button(frame1,text="テト譜生成",command=button3)
+button3.grid(row=1,column=2,sticky=W)
+
+root.mainloop()
