@@ -1,8 +1,11 @@
-import sys
+import os,sys
 import webbrowser
-from tkinter import ttk
-from tkinter import *
-from PIL import Image,ImageDraw,ImageTk
+from tkinter import ttk,Tk,PhotoImage,filedialog
+from PyQt5 import QtWidgets,QtCore,QtGui
+from PIL import Image,ImageDraw,ImageTk,ImageGrab
+from time import sleep
+import cv2
+import numpy as np
 #テト譜の仕様→https://docs.google.com/presentation/d/1V4PNyt41to81phK9u0iXnIkAfp-nV3g3xcl7c5qW-FI/edit
 def imagetotetohu(orgimg):
     img = Image.open(orgimg)
@@ -14,7 +17,7 @@ def imagetotetohu(orgimg):
     URL = 'http://fumen.zui.jp/?v115@'
     tetohuconvert = [['A','B','C','D','E','F','G','H','I','J'],['K','L','M','N','O','P','Q','R','S','T'],['U','V','W','X','Y','Z','a','b','c','d'],['e','f','g','h','i','j','k','l','m','n'],['o','p','q','r','s','t','u','v','w','x'],['y','z','0','1','2','3','4','5','6','7'],['8','9','+','/']]
     tetohu = [8,29]
-    def colorjudge(colorlist):
+    def colorjudge(colorlist):#そのマスにミノがあるかどうか判定
         colorlist.sort()
         if (colorlist[2]-70>colorlist[1] or colorlist[1]-70>colorlist[0]):
             return True
@@ -52,32 +55,96 @@ def imagetotetohu(orgimg):
         b = int(c/64)#(a,b)の形が#1の一番上と同じ形式になっているはず
         URL += tetohuconvert[int(a/10)][a%10]+tetohuconvert[int(b/10)][b%10]
     webbrowser.open(URL)
+
 root = Tk()
 root.title('テト譜生成')
 
-frame1 = ttk.Frame(root,height=800,width=500)
-frame1.grid(row=0,column=0,sticky=(N,E,S,W))
+class MyWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        self.setGeometry(0,0,screen_width, screen_height)
+        self.setWindowTitle("")
+        self.setWindowOpacity(0.3)
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.begin = QtCore.QPoint()
+        self.end = QtCore.QPoint()
 
-orgimg="original.png"
-img1=PhotoImage(file=orgimg)
-label1=ttk.Label(frame1,image=img1)
-label1.grid(row=0,column=0,columnspan=3,sticky=N)
+        print("Capture the screen...")
+        self.show()
+
+    def paintEvent(self, event):
+        qp = QtGui.QPainter(self)
+        qp.setPen(QtGui.QPen(QtGui.QColor("black"), 1))
+        qp.setBrush(QtGui.QColor(128, 128, 255, 128))
+        qp.drawRect(QtCore.QRect(self.begin, self.end))       
+
+    def mousePressEvent(self, event):
+        self.begin = event.pos()
+        self.end = self.begin
+        self.update()
+
+    def mouseMoveEvent(self, event):
+        self.end = event.pos()
+        self.update()
+
+    def mouseReleaseEvent(self, event):
+        self.end = event.pos()
+        self.close()
+
+        x1 = min(self.begin.x(), self.end.x())
+        y1 = min(self.begin.y(), self.end.y())
+        x2 = max(self.begin.x(), self.end.x())
+        y2 = max(self.begin.y(), self.end.y())
+
+        img = ImageGrab.grab(bbox=(x1,y1,x2,y2))
+        img.save("capture.png")
+        #　スクショ保存まではうまく行ってるっぽい　表示ができない
+        label1.configure(image=img)
+        label1.image=img
+
+frame1 = ttk.Frame(root,height=800,width=500)
+frame1.grid(row=0,column=0)
+
+orgimg="dummy.png"
+photoim=PhotoImage(file=orgimg)
+label1=ttk.Label(frame1,image=photoim)
+label1.grid(row=0,column=0,columnspan=4)
 
 def button1():
-    pass#スクショ撮る処理
-    #label1の画像を開いた画像で更新
+    #画面取得処理
+    app = QtWidgets.QApplication(sys.argv)
+    window = MyWidget()
+    window.show()
+    app.aboutToQuit.connect(app.deleteLater)
+    app.exec_()
 button1=ttk.Button(frame1,text="画像取得",command=button1)
-button1.grid(row=1,column=0,sticky=E)
+button1.grid(row=1,column=0)
+
+def button4():
+    pass#画像更新処理
+button4=ttk.Button(frame1,text="画像更新",command=button4)
+button4.grid(row=1,column=1)
 
 def button2():
-    pass#ファイルから画像を開く処理
+    #ファイルから画像を開く処理
+    fTyp = [("","*")]
+    iDir = os.path.abspath(os.path.dirname(__file__))
+    filepath = filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
+    #label1の画像を開いた画像で更新
+    orgimg=filepath
+    photoim=PhotoImage(file=orgimg)
+    label1.configure(image=photoim)
+    label1.image=photoim
     #label1の画像を開いた画像で更新
 button2=ttk.Button(frame1,text="ファイルから開く",command=button2)
-button2.grid(row=1,column=1,sticky=S)
+button2.grid(row=1,column=2)
 
 def button3():
     imagetotetohu(orgimg)
 button3=ttk.Button(frame1,text="テト譜生成",command=button3)
-button3.grid(row=1,column=2,sticky=W)
+button3.grid(row=1,column=3)
 
 root.mainloop()
