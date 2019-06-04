@@ -79,7 +79,7 @@ class MyWidget(QtWidgets.QWidget):
         qp = QtGui.QPainter(self)
         qp.setPen(QtGui.QPen(QtGui.QColor("black"), 1))
         qp.setBrush(QtGui.QColor(128, 128, 255, 128))
-        qp.drawRect(QtCore.QRect(self.begin, self.end))       
+        qp.drawRect(QtCore.QRect(self.begin, self.end))
 
     def mousePressEvent(self, event):
         self.begin = event.pos()
@@ -139,6 +139,10 @@ def button2():
     label1.configure(image=photoim)
     label1.image=photoim
     #label1の画像を開いた画像で更新
+    orgimg=filepath
+    img1=PhotoImage(file=orgimg)
+    label1.configure(image=img1)
+    label1.image=img1
 button2=ttk.Button(frame1,text="ファイルから開く",command=button2)
 button2.grid(row=1,column=2)
 
