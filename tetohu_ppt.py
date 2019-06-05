@@ -130,19 +130,15 @@ button4.grid(row=1,column=1)
 
 def button2():
     #ファイルから画像を開く処理
-    fTyp = [("","*")]
+    fTyp = [("Image Files",('.jpg','.png'))]
     iDir = os.path.abspath(os.path.dirname(__file__))
     filepath = filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
     #label1の画像を開いた画像で更新
-    orgimg=filepath
-    photoim=PhotoImage(file=orgimg)
-    label1.configure(image=photoim)
-    label1.image=photoim
-    #label1の画像を開いた画像で更新
-    orgimg=filepath
-    img1=PhotoImage(file=orgimg)
-    label1.configure(image=img1)
-    label1.image=img1
+    if filepath[-4:]=='.jpg' or filepath[-4:]=='.png':
+        orgimg=filepath
+        photoim=PhotoImage(file=orgimg)
+        label1.configure(image=photoim)
+        label1.image=photoim
 button2=ttk.Button(frame1,text="ファイルから開く",command=button2)
 button2.grid(row=1,column=2)
 
