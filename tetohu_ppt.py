@@ -11,9 +11,10 @@ def imagetotetohu(orgimg):
     img = Image.open(orgimg)
     img = img.convert("RGB")
     width, height = img.size
+    print(width, height)
     draw = ImageDraw.Draw(img)
-    square_width = int(width/10)
-    square_height = int(height/20)
+    square_width = width/10
+    square_height = height/20
     URL = 'http://fumen.zui.jp/?v115@'
     tetohuconvert = [['A','B','C','D','E','F','G','H','I','J'],['K','L','M','N','O','P','Q','R','S','T'],['U','V','W','X','Y','Z','a','b','c','d'],['e','f','g','h','i','j','k','l','m','n'],['o','p','q','r','s','t','u','v','w','x'],['y','z','0','1','2','3','4','5','6','7'],['8','9','+','/']]
     tetohu = [8,29]
@@ -45,7 +46,7 @@ def imagetotetohu(orgimg):
         for j in range(10):
             r,g,b = img.getpixel((j*square_width+int(square_height/2),i*square_height+int(square_height/2)))
             maketetohu(r,g,b)
-            draw.point([j*square_width+int(square_height/2),i*square_height+int(square_height/2)],fill=(255,0,0))
+            draw.point([round(j*square_width+square_height/2),round(i*square_height+square_height/2)],fill=(255,0,0))
     img.save('grided.png','PNG')
     while len(tetohu)>1:
         a = tetohu.pop(0)
@@ -94,6 +95,7 @@ class MyWidget(QtWidgets.QWidget):
         self.end = event.pos()
         self.close()
 
+        global x1,y1,x2,y2
         x1 = min(self.begin.x(), self.end.x())
         y1 = min(self.begin.y(), self.end.y())
         x2 = max(self.begin.x(), self.end.x())
@@ -101,9 +103,11 @@ class MyWidget(QtWidgets.QWidget):
 
         img = ImageGrab.grab(bbox=(x1,y1,x2,y2))
         img.save("capture.png")
-        #　スクショ保存まではうまく行ってるっぽい　表示ができない
-        label1.configure(image=img)
-        label1.image=img
+        global orgimg
+        orgimg="capture.png"
+        photoim=PhotoImage(file=orgimg)
+        label1.configure(image=photoim)
+        label1.image=photoim
 
 frame1 = ttk.Frame(root,height=800,width=500)
 frame1.grid(row=0,column=0)
@@ -120,13 +124,20 @@ def button1():
     window.show()
     app.aboutToQuit.connect(app.deleteLater)
     app.exec_()
+    button4["state"]="active"
 button1=ttk.Button(frame1,text="画像取得",command=button1)
 button1.grid(row=1,column=0)
 
 def button4():
-    pass#画像更新処理
-button4=ttk.Button(frame1,text="画像更新",command=button4)
+    #画像更新処理
+    img = ImageGrab.grab(bbox=(x1,y1,x2,y2))
+    img.save("capture.png")
+    photoim=PhotoImage(file=orgimg)
+    label1.configure(image=photoim)
+    label1.image=photoim
+button4=ttk.Button(frame1,text="画像更新",command=button4,state="disable")
 button4.grid(row=1,column=1)
+
 
 def button2():
     #ファイルから画像を開く処理
@@ -135,6 +146,7 @@ def button2():
     filepath = filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
     #label1の画像を開いた画像で更新
     if filepath[-4:]=='.jpg' or filepath[-4:]=='.png':
+        button4["state"]="disable"
         orgimg=filepath
         photoim=PhotoImage(file=orgimg)
         label1.configure(image=photoim)
