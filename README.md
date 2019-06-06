@@ -5,6 +5,9 @@ http://crize.blog.jp/archives/16752321.html
 せり上がりに使うラインにミノを置いていたのを修正しました  
 エフェクトの誤認を減らしました(たぶん…)  
 アルファチャンネル付きのpngを読み込めるようにしました  
-
-2019/04/21
-http://crize.blog.jp/archives/17198209.html
+  
+2019/04/21  
+http://crize.blog.jp/archives/17198209.html  
+  
+2019/06/06  
+http://crize.blog.jp/archives/18126843.html
