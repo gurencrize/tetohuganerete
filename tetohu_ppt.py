@@ -3,7 +3,6 @@ import webbrowser
 from tkinter import ttk,Tk,PhotoImage,filedialog
 from PyQt5 import QtWidgets,QtCore,QtGui
 from PIL import Image,ImageDraw,ImageTk,ImageGrab
-from time import sleep
 import cv2
 import numpy as np
 #テト譜の仕様→https://docs.google.com/presentation/d/1V4PNyt41to81phK9u0iXnIkAfp-nV3g3xcl7c5qW-FI/edit
@@ -11,7 +10,6 @@ def imagetotetohu(orgimg):
     img = Image.open(orgimg)
     img = img.convert("RGB")
     width, height = img.size
-    print(width, height)
     draw = ImageDraw.Draw(img)
     square_width = width/10
     square_height = height/20
@@ -112,9 +110,7 @@ class MyWidget(QtWidgets.QWidget):
 frame1 = ttk.Frame(root,height=800,width=500)
 frame1.grid(row=0,column=0)
 
-orgimg="dummy.png"
-photoim=PhotoImage(file=orgimg)
-label1=ttk.Label(frame1,image=photoim)
+label1=ttk.Label(frame1)
 label1.grid(row=0,column=0,columnspan=4)
 
 def button1():
@@ -125,6 +121,7 @@ def button1():
     app.aboutToQuit.connect(app.deleteLater)
     app.exec_()
     button4["state"]="active"
+    button3["state"]="active"
 button1=ttk.Button(frame1,text="画像取得",command=button1)
 button1.grid(row=1,column=0)
 
@@ -147,6 +144,7 @@ def button2():
     #label1の画像を開いた画像で更新
     if filepath[-4:]=='.jpg' or filepath[-4:]=='.png':
         button4["state"]="disable"
+        button3["state"]="active"
         orgimg=filepath
         photoim=PhotoImage(file=orgimg)
         label1.configure(image=photoim)
@@ -156,7 +154,7 @@ button2.grid(row=1,column=2)
 
 def button3():
     imagetotetohu(orgimg)
-button3=ttk.Button(frame1,text="テト譜生成",command=button3)
+button3=ttk.Button(frame1,text="テト譜生成",command=button3,state="disable")
 button3.grid(row=1,column=3)
 
 root.mainloop()
