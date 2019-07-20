@@ -145,6 +145,7 @@ def button2():
     if filepath[-4:]=='.jpg' or filepath[-4:]=='.png':
         button4["state"]="disable"
         button3["state"]="active"
+        global orgimg
         orgimg=filepath
         photoim=PhotoImage(file=orgimg)
         label1.configure(image=photoim)
