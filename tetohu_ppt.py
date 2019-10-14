@@ -3,6 +3,7 @@ import webbrowser
 from tkinter import ttk,Tk,PhotoImage,filedialog
 from PyQt5 import QtWidgets,QtCore,QtGui
 from PIL import Image,ImageDraw,ImageTk,ImageGrab
+import tempfile
 import cv2
 import numpy as np
 #テト譜の仕様→https://docs.google.com/presentation/d/1V4PNyt41to81phK9u0iXnIkAfp-nV3g3xcl7c5qW-FI/edit
@@ -100,18 +101,20 @@ class MyWidget(QtWidgets.QWidget):
         y2 = max(self.begin.y(), self.end.y())
 
         img = ImageGrab.grab(bbox=(x1,y1,x2,y2))
-        img.save("capture.png")
-        global orgimg
-        orgimg="capture.png"
-        photoim=PhotoImage(file=orgimg)
-        label1.configure(image=photoim)
-        label1.image=photoim
+        imgname=tempdir.name+"/capture.png"
+        img.save(imgname)
+        updatelabel1(imgname)
 
 frame1 = ttk.Frame(root,height=800,width=500)
 frame1.grid(row=0,column=0)
 
 label1=ttk.Label(frame1)
-label1.grid(row=0,column=0,columnspan=4)
+label1.grid(row=1,column=0,columnspan=5)
+def updatelabel1(name):
+    photoim=PhotoImage(file=name)
+    label1.configure(image=photoim)
+    label1.image=photoim
+    label1.imagename=name
 
 def button1():
     #画面取得処理
@@ -123,17 +126,16 @@ def button1():
     button4["state"]="active"
     button3["state"]="active"
 button1=ttk.Button(frame1,text="画像取得",command=button1)
-button1.grid(row=1,column=0)
+button1.grid(row=0,column=0)
 
 def button4():
     #画像更新処理
     img = ImageGrab.grab(bbox=(x1,y1,x2,y2))
-    img.save("capture.png")
-    photoim=PhotoImage(file=orgimg)
-    label1.configure(image=photoim)
-    label1.image=photoim
+    imgname=tempdir.name+"/capture.png"
+    img.save(imgname)
+    updatelabel1(imgname)
 button4=ttk.Button(frame1,text="画像更新",command=button4,state="disable")
-button4.grid(row=1,column=1)
+button4.grid(row=0,column=1)
 
 
 def button2():
@@ -145,17 +147,16 @@ def button2():
     if filepath[-4:]=='.jpg' or filepath[-4:]=='.png':
         button4["state"]="disable"
         button3["state"]="active"
-        global orgimg
-        orgimg=filepath
-        photoim=PhotoImage(file=orgimg)
-        label1.configure(image=photoim)
-        label1.image=photoim
+        img=Image.open(filepath)
+        imgname=tempdir.name+"/image.png"
+        img.save(imgname,"PNG")
+        updatelabel1(imgname)
 button2=ttk.Button(frame1,text="ファイルから開く",command=button2)
-button2.grid(row=1,column=2)
+button2.grid(row=0,column=2)
 
 def button3():
-    imagetotetohu(orgimg)
+    imagetotetohu(label1.imagename)
 button3=ttk.Button(frame1,text="テト譜生成",command=button3,state="disable")
-button3.grid(row=1,column=3)
-
+button3.grid(row=0,column=3)
+tempdir=tempfile.TemporaryDirectory()
 root.mainloop()

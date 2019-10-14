@@ -12,5 +12,8 @@ http://crize.blog.jp/archives/17198209.html
 2019/06/06  
 http://crize.blog.jp/archives/18126843.html  
   
-2019/07/21
-http://crize.blog.jp/archives/18959038.html
+2019/07/21  
+http://crize.blog.jp/archives/18959038.html  
+  
+2019/10/14  
+jpgが読み込めない不具合を修正しました
