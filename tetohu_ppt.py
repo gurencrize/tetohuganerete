@@ -125,7 +125,7 @@ def button1():
     app.exec_()
     button4["state"]="active"
     button3["state"]="active"
-button1=ttk.Button(frame1,text="画像取得",command=button1)
+button1=ttk.Button(frame1,text="画面キャプチャ",command=button1)
 button1.grid(row=0,column=0)
 
 def button4():
@@ -134,7 +134,7 @@ def button4():
     imgname=tempdir.name+"/capture.png"
     img.save(imgname)
     updatelabel1(imgname)
-button4=ttk.Button(frame1,text="画像更新",command=button4,state="disable")
+button4=ttk.Button(frame1,text="画面更新",command=button4,state="disable")
 button4.grid(row=0,column=1)
 
 
