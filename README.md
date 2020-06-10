@@ -16,4 +16,7 @@ http://crize.blog.jp/archives/18126843.html
 http://crize.blog.jp/archives/18959038.html  
   
 2019/10/14  
-jpgが読み込めない不具合を修正しました
+jpgが読み込めない不具合を修正しました  
+  
+2020/06/10  
+ボタンの名前をわかりやすく(？)修正しました
